@@ -1,12 +1,16 @@
 import { signal } from '@angular/core';
 import { TestComponentComponent } from './test-component.component';
-import { createOutputSpy } from 'cypress/angular';
+import { createOutputSpy } from 'cypress/angular-signals';
 
 it('mount component with component properties', () => {
   cy.mount(TestComponentComponent, {
     componentProperties: {
       title: 'Test Component',
       count: signal(0),
+      // we need to @ts-expect-error here since count is not a decorated Output()
+      // so the property doesn't exist on the component. However, since count is a model signal, it 
+      // produces an output, so this code will work in spying on the signal output
+      // @ts-expect-error
       countChange: createOutputSpy('countChange'),
     },
   });
